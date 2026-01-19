@@ -1,0 +1,80 @@
+<view class="container">
+  <view class="stats-container">
+    <view class="stat-card" bindtap="goToPendingOrders">
+      <view class="stat-value">{{stats.pendingCount}}</view>
+      <view class="stat-label">待接单</view>
+    </view>
+    <view class="stat-card" bindtap="goToMineAll">
+      <view class="stat-value">{{stats.processingCount}}</view>
+      <view class="stat-label">处理中</view>
+    </view>
+    <view class="stat-card" bindtap="goToOrderAll">
+      <view class="stat-value">{{stats.completedCount}}</view>
+      <view class="stat-label">已完成</view>
+    </view>
+    <view class="stat-card">
+      <view class="stat-value">¥{{stats.todayAmount}}</view>
+      <view class="stat-label">今日营业额</view>
+    </view>
+  </view>
+
+  <view class="quick-actions">
+    <view class="action-item" bindtap="goToPendingOrders">
+      <view class="action-icon pending">📋</view>
+      <view class="action-text">待接单</view>
+    </view>
+    <view class="action-item" bindtap="goToMineStatus" data-status="2">
+      <view class="action-icon processing">🍳</view>
+      <view class="action-text">待出餐</view>
+    </view>
+    <view class="action-item" bindtap="goToMineStatus" data-status="3">
+      <view class="action-icon delivering">🚚</view>
+      <view class="action-text">待配送</view>
+    </view>
+    <view class="action-item" bindtap="goToMenu">
+      <view class="action-icon menu">🍽️</view>
+      <view class="action-text">菜品管理</view>
+    </view>
+  </view>
+
+  <view class="recent-orders">
+    <view class="section-title">最新订单</view>
+    <view class="order-list">
+      <view 
+        class="order-item" 
+        wx:for="{{recentOrders}}" 
+        wx:key="id"
+        bindtap="goToOrderDetail"
+        data-id="{{item.id}}"
+      >
+        <view class="order-header">
+          <view class="order-no">{{item.orderNo}}</view>
+          <view class="order-status {{getStatusClass(item.status)}}">{{getStatusText(item.status)}}</view>
+        </view>
+        <view class="order-info">
+          <text class="info-label">订单状态：</text>
+          <text class="order-status-text {{getStatusClass(item.status)}}">{{getStatusText(item.status)}}</text>
+        </view>
+        <view class="order-info">
+          <text class="info-label">订单类型：</text>
+          <text>{{item.tableNo || '外卖'}}</text>
+        </view>
+        <view class="order-info">
+          <text class="info-label">金额：</text>
+          <text class="order-amount">¥{{item.totalAmount}}</text>
+        </view>
+        <view class="order-info">
+          <text class="info-label">时间：</text>
+          <text>{{item.createdAtFormatted}}</text>
+        </view>
+      </view>
+      <view class="order-actions" wx:if="{{item.status === 1}}">
+        <view 
+          class="action-btn primary" 
+          catchtap="acceptOrder"
+          data-id="{{item.id}}"
+        >接单</view>
+      </view>
+    </view>
+  </view>
+</view>

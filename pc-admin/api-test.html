@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>首页API测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .test-result {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .success {
+            background: #e6f7ff;
+            border-color: #91d5ff;
+        }
+        .error {
+            background: #fff1f0;
+            border-color: #ffa39e;
+        }
+        .data {
+            background: #f6ffed;
+            border-color: #b7eb8f;
+            font-family: monospace;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <h1>首页API测试</h1>
+    <div id="results"></div>
+    
+    <script>
+        async function testAPI(url, body, name) {
+            const resultsDiv = document.getElementById('results');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = 'test-result';
+            
+            try {
+                console.log(`正在测试 ${name}...`);
+                const response = await fetch(`http://localhost:8081${url}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: body
+                });
+                
+                const data = await response.json();
+                console.log(`${name} 响应:`, data);
+                
+                if (data.code === 200) {
+                    resultDiv.className = 'test-result success';
+                    resultDiv.innerHTML = `<strong>${name}</strong>: 成功<br>`;
+                    
+                    const dataDiv = document.createElement('div');
+                    dataDiv.className = 'data';
+                    if (Array.isArray(data.data)) {
+                        dataDiv.textContent = `数据长度: ${data.data.length}`;
+                    } else if (data.data && typeof data.data === 'object') {
+                        if (data.data.records) {
+                            dataDiv.textContent = `记录数: ${data.data.records.length}, 总数: ${data.data.total}`;
+                        } else {
+                            dataDiv.textContent = JSON.stringify(data.data, null, 2);
+                        }
+                    }
+                    resultDiv.appendChild(dataDiv);
+                } else {
+                    resultDiv.className = 'test-result error';
+                    resultDiv.innerHTML = `<strong>${name}</strong>: 失败 - ${data.message}`;
+                }
+            } catch (error) {
+                console.error(`${name} 错误:`, error);
+                resultDiv.className = 'test-result error';
+                resultDiv.innerHTML = `<strong>${name}</strong>: 错误 - ${error.message}`;
+            }
+            
+            resultsDiv.appendChild(resultDiv);
+        }
+        
+        async function runTests() {
+            await testAPI('/api/merchant/list', '{}', '门店列表');
+            await testAPI('/api/dish/list', '{}', '菜品列表');
+            await testAPI('/api/user/list', '{}', '用户列表');
+            await testAPI('/api/order/merchant', JSON.stringify({ merchantId: 1, page: 1, size: 5 }), '订单列表');
+        }
+        
+        runTests();
+    </script>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>API测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .success {
+            background: #e6f7ff;
+            border-color: #91d5ff;
+        }
+        .error {
+            background: #fff1f0;
+            border-color: #ffa39e;
+        }
+    </style>
+</head>
+<body>
+    <h1>API测试页面</h1>
+    
+    <div class="test-section">
+        <h2>1. 登录</h2>
+        <button onclick="login()">登录 (13681978701 / 111111)</button>
+        <div id="login-result" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>2. 测试API</h2>
+        <button onclick="testMerchant()">测试门店列表</button>
+        <button onclick="testDish()">测试菜品列表</button>
+        <button onclick="testUser()">测试用户列表</button>
+        <button onclick="testOrder()">测试订单列表</button>
+        <div id="api-result" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>3. 检查本地存储</h2>
+        <button onclick="checkStorage()">检查存储</button>
+        <div id="storage-result" class="result"></div>
+    </div>
+
+    <script>
+        let token = null;
+
+        async function login() {
+            const resultDiv = document.getElementById('login-result');
+            resultDiv.innerHTML = '登录中...';
+            
+            try {
+                const response = await fetch('/api/admin/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        mobile: '13681978701',
+                        code: '111111'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.code === 200) {
+                    token = data.data.token;
+                    localStorage.setItem('adminToken', token);
+                    resultDiv.innerHTML = '登录成功！\nToken: ' + token.substring(0, 20) + '...';
+                    resultDiv.className = 'result success';
+                } else {
+                    resultDiv.innerHTML = '登录失败：' + data.message;
+                    resultDiv.className = 'result error';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = '登录错误：' + error.message;
+                resultDiv.className = 'result error';
+            }
+        }
+
+        async function testAPI(url, body) {
+            const resultDiv = document.getElementById('api-result');
+            resultDiv.innerHTML = '请求中...';
+            
+            try {
+                const headers = { 'Content-Type': 'application/json' };
+                if (token) {
+                    headers['Authorization'] = token;
+                }
+                
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify(body || {})
+                });
+                
+                const data = await response.json();
+                
+                if (data.code === 200) {
+                    const count = Array.isArray(data.data) ? data.data.length : (data.data?.total || 0);
+                    resultDiv.innerHTML = '成功！\n数据量: ' + count + '\n\n完整数据:\n' + JSON.stringify(data, null, 2);
+                    resultDiv.className = 'result success';
+                } else {
+                    resultDiv.innerHTML = '失败：' + data.message + '\n\n完整数据:\n' + JSON.stringify(data, null, 2);
+                    resultDiv.className = 'result error';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = '错误：' + error.message;
+                resultDiv.className = 'result error';
+            }
+        }
+
+        function testMerchant() {
+            testAPI('/api/merchant/list', {});
+        }
+
+        function testDish() {
+            testAPI('/api/dish/list', {});
+        }
+
+        function testUser() {
+            testAPI('/api/user/list', {});
+        }
+
+        function testOrder() {
+            testAPI('/api/order/merchant', { merchantId: 1, page: 1, size: 5 });
+        }
+
+        function checkStorage() {
+            const resultDiv = document.getElementById('storage-result');
+            const storedToken = localStorage.getItem('adminToken');
+            const userInfo = localStorage.getItem('userInfo');
+            const menuList = localStorage.getItem('menuList');
+            
+            let html = 'Token: ' + (storedToken ? '存在 (' + storedToken.substring(0, 20) + '...)' : '不存在') + '\n';
+            html += 'UserInfo: ' + (userInfo ? '存在' : '不存在') + '\n';
+            html += 'MenuList: ' + (menuList ? '存在' : '不存在') + '\n';
+            
+            if (menuList) {
+                try {
+                    const menus = JSON.parse(menuList);
+                    html += '\n菜单数量: ' + menus.length + '\n';
+                    html += '菜单列表:\n';
+                    menus.forEach(menu => {
+                        html += '  - ' + menu.permName + ' (' + menu.permCode + ')\n';
+                    });
+                } catch (e) {
+                    html += '\n菜单数据解析失败: ' + e.message;
+                }
+            }
+            
+            resultDiv.innerHTML = html;
+        }
+    </script>
+</body>
+</html>

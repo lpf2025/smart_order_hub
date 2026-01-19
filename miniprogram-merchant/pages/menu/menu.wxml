@@ -1,0 +1,56 @@
+<view class="container">
+  <view class="header">
+    <text class="title">菜品管理</text>
+    <view class="header-actions">
+      <button class="logout-btn" bindtap="handleLogout">退出登录</button>
+      <button class="add-btn" bindtap="addDish">添加菜品</button>
+    </view>
+  </view>
+
+  <view class="category-filter">
+    <view 
+      class="category-item {{currentCategory === '全部' ? 'active' : ''}}" 
+      bindtap="filterByCategory"
+      data-category="全部"
+    >全部</view>
+    <view 
+      class="category-item {{currentCategory === item ? 'active' : ''}}" 
+      wx:for="{{categories}}" 
+      wx:key="*this"
+      bindtap="filterByCategory"
+      data-category="{{item}}"
+    >{{item}}</view>
+  </view>
+
+  <view class="dish-list">
+    <view 
+      class="dish-item" 
+      wx:for="{{dishes}}" 
+      wx:key="id"
+      bindtap="editDish"
+      data-id="{{item.id}}"
+    >
+      <image class="dish-image" src="{{item.imageUrl || '/images/default-dish.png'}}" mode="aspectFill"></image>
+      <view class="dish-info">
+        <view class="dish-name">{{item.name}}</view>
+        <view class="dish-category">{{item.category}}</view>
+        <view class="dish-footer">
+          <view class="dish-price">¥{{item.price}}</view>
+          <view class="dish-status {{item.status === 1 ? 'on' : 'off'}}">
+            {{item.status === 1 ? '上架' : '下架'}}
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="empty" wx:if="{{dishes.length === 0}}">
+    <text>暂无菜品</text>
+  </view>
+
+  <view class="footer-links">
+    <text class="footer-link" bindtap="goToWechatAgreement">《微信公众平台服务协议》</text>
+    <text class="footer-divider">|</text>
+    <text class="footer-link" bindtap="goToMiniProgramAgreement">《微信小程序平台服务协议》</text>
+  </view>
+</view>

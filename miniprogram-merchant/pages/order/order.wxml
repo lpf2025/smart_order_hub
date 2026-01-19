@@ -1,0 +1,82 @@
+<view class="container">
+  <view class="filter-tabs">
+    <view 
+      class="tab-item {{currentStatus === 0 ? 'active' : ''}}" 
+      bindtap="filterOrders"
+      data-status="0"
+    >全部</view>
+    <view 
+      class="tab-item {{currentStatus === 1 ? 'active' : ''}}" 
+      bindtap="filterOrders"
+      data-status="1"
+    >待接单</view>
+    <view 
+      class="tab-item {{currentStatus === 2 ? 'active' : ''}}" 
+      bindtap="filterOrders"
+      data-status="2"
+    >待出餐</view>
+    <view 
+      class="tab-item {{currentStatus === 3 ? 'active' : ''}}" 
+      bindtap="filterOrders"
+      data-status="3"
+    >待配送</view>
+    <view 
+      class="tab-item {{currentStatus === 4 ? 'active' : ''}}" 
+      bindtap="filterOrders"
+      data-status="4"
+    >配送中</view>
+  </view>
+
+  <view class="order-list">
+    <view 
+      class="order-item" 
+      wx:for="{{orders}}" 
+      wx:key="id"
+      bindtap="goToDetail"
+      data-id="{{item.id}}"
+    >
+      <view class="order-header">
+        <view class="order-no">{{item.orderNo}}</view>
+        <view class="order-status {{getStatusClass(item.status)}}">{{getStatusText(item.status)}}</view>
+      </view>
+      <view class="order-content">
+        <view class="order-info">
+          <text class="info-label">订单状态：</text>
+          <text class="order-status-text {{getStatusClass(item.status)}}">{{getStatusText(item.status)}}</text>
+        </view>
+        <view class="order-info">
+          <text class="info-label">订单类型：</text>
+          <text>{{item.tableNo || '外卖'}}</text>
+        </view>
+        <view class="order-info address-row" wx:if="{{item.address}}">
+          <text class="info-label">配送地址：</text>
+          <text class="address-text">{{item.address.contact}} {{item.address.phone}} {{item.address.province}}{{item.address.city}}{{item.address.district}}{{item.address.detail}}</text>
+        </view>
+        <view class="order-info">
+          <text class="info-label">金额：</text>
+          <text class="order-amount">¥{{item.totalAmount}}</text>
+        </view>
+        <view class="order-info">
+          <text class="info-label">下单时间：</text>
+          <text>{{item.createdAtFormatted}}</text>
+        </view>
+        <view class="order-info" wx:if="{{item.remark}}">
+          <text class="info-label">备注：</text>
+          <text>{{item.remark}}</text>
+        </view>
+      </view>
+      <view class="order-actions">
+        <view 
+          class="action-btn primary" 
+          wx:if="{{item.status === 1 || (item.merchantUserId && item.merchantUserId === merchantUserId)}}"
+          catchtap="{{item.status === 1 ? 'acceptOrder' : (item.status === 2 ? 'readyOrder' : (item.status === 3 ? 'startDelivery' : 'completeOrder'))}}"
+          data-id="{{item.id}}"
+        >{{item.status === 1 ? '接单' : (item.status === 2 ? '出餐' : (item.status === 3 ? '开始配送' : '完成'))}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="empty" wx:if="{{orders.length === 0}}">
+    <text>暂无订单</text>
+  </view>
+</view>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>直接测试Vue数据绑定</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .stat {
+            display: inline-block;
+            width: 150px;
+            margin: 10px;
+            padding: 15px;
+            border: 2px solid #333;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .label {
+            font-size: 14px;
+            color: #666;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h1>Vue数据绑定测试</h1>
+        <div>
+            <div class="stat">
+                <div>{{ stats.merchantCount }}</div>
+                <div class="label">门店</div>
+            </div>
+            <div class="stat">
+                <div>{{ stats.dishCount }}</div>
+                <div class="label">菜品</div>
+            </div>
+            <div class="stat">
+                <div>{{ stats.orderCount }}</div>
+                <div class="label">订单</div>
+            </div>
+            <div class="stat">
+                <div>{{ stats.userCount }}</div>
+                <div class="label">用户</div>
+            </div>
+        </div>
+        <div style="margin-top: 20px;">
+            <button @click="loadData">加载数据</button>
+            <div v-if="loading" style="margin-top: 10px;">加载中...</div>
+        </div>
+    </div>
+    
+    <script>
+        const { createApp, ref } = Vue;
+        
+        createApp({
+            setup() {
+                const stats = ref({
+                    merchantCount: 0,
+                    dishCount: 0,
+                    orderCount: 0,
+                    userCount: 0
+                });
+                
+                const loading = ref(false);
+                
+                const loadData = async () => {
+                    loading.value = true;
+                    try {
+                        const merchantRes = await fetch('http://localhost:8081/api/merchant/list', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: '{}'
+                        });
+                        const merchantData = await merchantRes.json();
+                        stats.value.merchantCount = merchantData.data ? merchantData.data.length : 0;
+                        
+                        const dishRes = await fetch('http://localhost:8081/api/dish/list', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: '{}'
+                        });
+                        const dishData = await dishRes.json();
+                        stats.value.dishCount = dishData.data ? dishData.data.length : 0;
+                        
+                        const userRes = await fetch('http://localhost:8081/api/user/list', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: '{}'
+                        });
+                        const userData = await userRes.json();
+                        stats.value.userCount = userData.data ? userData.data.length : 0;
+                        
+                        const orderRes = await fetch('http://localhost:8081/api/order/merchant', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ merchantId: 1, page: 1, size: 5 })
+                        });
+                        const orderData = await orderRes.json();
+                        stats.value.orderCount = orderData.data ? orderData.data.total : 0;
+                    } catch (error) {
+                        console.error('加载数据失败:', error);
+                        alert('加载数据失败: ' + error.message);
+                    } finally {
+                        loading.value = false;
+                    }
+                };
+                
+                return {
+                    stats,
+                    loading,
+                    loadData
+                };
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>

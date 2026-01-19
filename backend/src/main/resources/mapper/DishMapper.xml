@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smartorder.mapper.DishMapper">
+    
+    <select id="getDishSalesStatistics" resultType="java.util.HashMap">
+        SELECT 
+            COUNT(*) as totalOrders,
+            COALESCE(SUM(od.quantity), 0) as totalQuantity,
+            COALESCE(SUM(od.quantity * od.price), 0) as totalAmount,
+            SUM(CASE WHEN DATE_FORMAT(o.created_at, '%Y-%m') = DATE_FORMAT(NOW(), '%Y-%m') THEN od.quantity ELSE 0 END) as monthQuantity,
+            COALESCE(SUM(CASE WHEN DATE_FORMAT(o.created_at, '%Y-%m') = DATE_FORMAT(NOW(), '%Y-%m') THEN od.quantity * od.price ELSE 0 END), 0) as monthAmount,
+            SUM(CASE WHEN DATE(o.created_at) = CURDATE() THEN od.quantity ELSE 0 END) as todayQuantity,
+            COALESCE(SUM(CASE WHEN DATE(o.created_at) = CURDATE() THEN od.quantity * od.price ELSE 0 END), 0) as todayAmount
+        FROM t_order o
+        INNER JOIN t_order_item od ON o.id = od.order_id
+        WHERE o.merchant_id = #{merchantId}
+          AND od.dish_id = #{dishId}
+          AND o.deleted = 0
+          AND o.pay_status = 1
+    </select>
+    
+    <select id="getBatchDishSalesStatistics" resultType="java.util.HashMap">
+        SELECT 
+            od.dish_id as dishId,
+            COUNT(*) as totalOrders,
+            COALESCE(SUM(od.quantity), 0) as totalQuantity,
+            COALESCE(SUM(od.quantity * od.price), 0) as totalAmount,
+            SUM(CASE WHEN DATE_FORMAT(o.created_at, '%Y-%m') = DATE_FORMAT(NOW(), '%Y-%m') THEN od.quantity ELSE 0 END) as monthQuantity,
+            COALESCE(SUM(CASE WHEN DATE_FORMAT(o.created_at, '%Y-%m') = DATE_FORMAT(NOW(), '%Y-%m') THEN od.quantity * od.price ELSE 0 END), 0) as monthAmount,
+            SUM(CASE WHEN DATE(o.created_at) = CURDATE() THEN od.quantity ELSE 0 END) as todayQuantity,
+            COALESCE(SUM(CASE WHEN DATE(o.created_at) = CURDATE() THEN od.quantity * od.price ELSE 0 END), 0) as todayAmount
+        FROM t_order o
+        INNER JOIN t_order_item od ON o.id = od.order_id
+        WHERE o.merchant_id = #{merchantId}
+          AND od.dish_id IN
+          <foreach collection="dishIds" item="dishId" open="(" separator="," close=")">
+              #{dishId}
+          </foreach>
+          AND o.deleted = 0
+          AND o.pay_status = 1
+        GROUP BY od.dish_id
+    </select>
+    
+</mapper>

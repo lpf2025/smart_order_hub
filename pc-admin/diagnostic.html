@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>诊断页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .success {
+            background: #e6f7ff;
+            border-color: #91d5ff;
+        }
+        .error {
+            background: #fff1f0;
+            border-color: #ffa39e;
+        }
+        .info {
+            background: #f6ffed;
+            border-color: #b7eb8f;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>首页数据诊断</h1>
+    
+    <div class="section info">
+        <h2>1. 检查本地存储</h2>
+        <div id="storage-check"></div>
+    </div>
+    
+    <div class="section info">
+        <h2>2. 检查API代理</h2>
+        <div id="proxy-check"></div>
+    </div>
+    
+    <div class="section info">
+        <h2>3. 测试API调用</h2>
+        <button onclick="testAPIs()">测试所有API</button>
+        <div id="api-results" style="margin-top: 10px;"></div>
+    </div>
+    
+    <div class="section info">
+        <h2>4. 检查Vue状态</h2>
+        <div id="vue-check"></div>
+    </div>
+    
+    <script>
+        function checkStorage() {
+            const checkDiv = document.getElementById('storage-check');
+            const token = localStorage.getItem('adminToken');
+            const userInfo = localStorage.getItem('userInfo');
+            const menuList = localStorage.getItem('menuList');
+            
+            let html = '<p><strong>Token:</strong> ' + (token ? '存在 (' + token.substring(0, 10) + '...)' : '不存在') + '</p>';
+            html += '<p><strong>UserInfo:</strong> ' + (userInfo ? '存在' : '不存在') + '</p>';
+            html += '<p><strong>MenuList:</strong> ' + (menuList ? '存在' : '不存在') + '</p>';
+            
+            if (menuList) {
+                try {
+                    const menus = JSON.parse(menuList);
+                    html += '<p><strong>菜单数量:</strong> ' + menus.length + '</p>';
+                    html += '<p><strong>菜单列表:</strong></p>';
+                    html += '<ul>';
+                    menus.forEach(menu => {
+                        html += '<li>' + menu.permName + ' (' + menu.permCode + ')</li>';
+                    });
+                    html += '</ul>';
+                } catch (e) {
+                    html += '<p style="color: red;">菜单数据解析失败: ' + e.message + '</p>';
+                }
+            }
+            
+            checkDiv.innerHTML = html;
+        }
+        
+        function checkProxy() {
+            const checkDiv = document.getElementById('proxy-check');
+            let html = '<p>当前页面URL: ' + window.location.href + '</p>';
+            html += '<p>API基础URL: /api (应该代理到 http://localhost:8081)</p>';
+            html += '<p>完整API地址: ' + window.location.origin + '/api/xxx</p>';
+            checkDiv.innerHTML = html;
+        }
+        
+        async function testAPIs() {
+            const resultsDiv = document.getElementById('api-results');
+            resultsDiv.innerHTML = '<p>测试中...</p>';
+            
+            const token = localStorage.getItem('adminToken');
+            
+            const apis = [
+                { name: '门店列表', url: '/api/merchant/list' },
+                { name: '菜品列表', url: '/api/dish/list' },
+                { name: '用户列表', url: '/api/user/list' },
+                { name: '订单列表', url: '/api/order/merchant', body: { merchantId: 1, page: 1, size: 5 } }
+            ];
+            
+            let html = '';
+            
+            for (const api of apis) {
+                try {
+                    const headers = { 'Content-Type': 'application/json' };
+                    if (token) {
+                        headers['Authorization'] = token;
+                    }
+                    
+                    const response = await fetch(api.url, {
+                        method: 'POST',
+                        headers: headers,
+                        body: JSON.stringify(api.body || {})
+                    });
+                    const data = await response.json();
+                    
+                    if (data.code === 200) {
+                        const count = Array.isArray(data.data) ? data.data.length : (data.data?.total || 0);
+                        html += '<div class="section success"><strong>' + api.name + ':</strong> 成功 - 数据量: ' + count + '</div>';
+                    } else {
+                        html += '<div class="section error"><strong>' + api.name + ':</strong> 失败 - ' + data.message + '</div>';
+                    }
+                } catch (error) {
+                    html += '<div class="section error"><strong>' + api.name + ':</strong> 错误 - ' + error.message + '</div>';
+                }
+            }
+            
+            resultsDiv.innerHTML = html;
+        }
+        
+        function checkVue() {
+            const checkDiv = document.getElementById('vue-check');
+            let html = '<p>Vue版本: ' + (window.Vue ? window.Vue.version : '未加载') + '</p>';
+            html += '<p>Element Plus: ' + (window.ElementPlus ? '已加载' : '未加载') + '</p>';
+            html += '<p>浏览器: ' + navigator.userAgent + '</p>';
+            checkDiv.innerHTML = html;
+        }
+        
+        checkStorage();
+        checkProxy();
+        checkVue();
+    </script>
+</body>
+</html>

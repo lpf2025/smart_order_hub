@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>菜单测试</title>
+</head>
+<body>
+    <h1>菜单测试</h1>
+    <div id="result"></div>
+    
+    <script>
+        async function testLogin() {
+            try {
+                const response = await fetch('http://localhost:8081/api/admin/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        mobile: '13681978701',
+                        code: '111111'
+                    })
+                });
+                
+                const result = await response.json();
+                console.log('登录结果:', result);
+                
+                if (result.code === 200) {
+                    const data = result.data;
+                    console.log('Token:', data.token);
+                    console.log('UserInfo:', data.userInfo);
+                    console.log('MenuList:', data.menuList);
+                    console.log('ButtonPermissions:', data.buttonPermissions);
+                    
+                    // 模拟前端菜单过滤逻辑
+                    const flattenMenus = (menus) => {
+                        let result = [];
+                        menus.forEach(menu => {
+                            if (menu.menuType === 1) {
+                                if (!menu.children || menu.children.length === 0) {
+                                    result.push(menu);
+                                } else {
+                                    result = result.concat(flattenMenus(menu.children));
+                                }
+                            }
+                        });
+                        return result;
+                    };
+                    
+                    const leafMenus = flattenMenus(data.menuList);
+                    console.log('叶子菜单:', leafMenus);
+                    
+                    const pathMap = {
+                        'system:role': '/roles',
+                        'system:merchant:user': '/merchant-users',
+                        'merchant:list': '/merchants',
+                        'dish:list': '/dishes',
+                        'order:list': '/orders',
+                        'system:customer': '/users'
+                    };
+                    
+                    let html = '<h2>菜单列表</h2><ul>';
+                    leafMenus.forEach(menu => {
+                        const path = pathMap[menu.permCode] || '/';
+                        html += `<li><strong>${menu.permName}</strong> (${menu.permCode}) - 路径: ${path}</li>`;
+                    });
+                    html += '</ul>';
+                    
+                    document.getElementById('result').innerHTML = html;
+                }
+            } catch (error) {
+                console.error('测试失败:', error);
+                document.getElementById('result').innerHTML = '<p style="color: red;">测试失败: ' + error.message + '</p>';
+            }
+        }
+        
+        testLogin();
+    </script>
+</body>
+</html>

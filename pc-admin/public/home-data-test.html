@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>首页数据测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .success {
+            background: #e6f7ff;
+            border-color: #91d5ff;
+        }
+        .error {
+            background: #fff1f0;
+            border-color: #ffa39e;
+        }
+    </style>
+</head>
+<body>
+    <h1>首页数据测试</h1>
+    
+    <div class="test-section">
+        <h2>1. 检查登录状态</h2>
+        <button onclick="checkLogin()">检查登录</button>
+        <button onclick="login()">登录</button>
+        <div id="login-result" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>2. 模拟Home.vue的数据加载</h2>
+        <button onclick="loadHomeData()">加载首页数据</button>
+        <div id="home-result" class="result"></div>
+    </div>
+
+    <script>
+        let token = null;
+
+        function checkLogin() {
+            const resultDiv = document.getElementById('login-result');
+            token = localStorage.getItem('adminToken');
+            const userInfo = localStorage.getItem('userInfo');
+            const menuList = localStorage.getItem('menuList');
+            
+            let html = 'Token: ' + (token ? '存在 (' + token.substring(0, 20) + '...)' : '不存在') + '\n';
+            html += 'UserInfo: ' + (userInfo ? '存在' : '不存在') + '\n';
+            html += 'MenuList: ' + (menuList ? '存在' : '不存在') + '\n';
+            
+            if (userInfo) {
+                try {
+                    const user = JSON.parse(userInfo);
+                    html += '\n用户信息:\n';
+                    html += '  - ID: ' + user.id + '\n';
+                    html += '  - 用户名: ' + user.username + '\n';
+                } catch (e) {
+                    html += '\n用户信息解析失败: ' + e.message;
+                }
+            }
+            
+            resultDiv.innerHTML = html;
+        }
+
+        async function login() {
+            const resultDiv = document.getElementById('login-result');
+            resultDiv.innerHTML = '登录中...';
+            
+            try {
+                const response = await fetch('/api/admin/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        mobile: '13681978701',
+                        code: '111111'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.code === 200) {
+                    token = data.data.token;
+                    localStorage.setItem('adminToken', token);
+                    localStorage.setItem('userInfo', JSON.stringify(data.data.userInfo));
+                    localStorage.setItem('menuList', JSON.stringify(data.data.menuList));
+                    localStorage.setItem('buttonPermissions', JSON.stringify(data.data.buttonPermissions || []));
+                    
+                    resultDiv.innerHTML = '登录成功！\nToken: ' + token.substring(0, 20) + '...\n\n已保存到localStorage:\n- adminToken\n- userInfo\n- menuList\n- buttonPermissions';
+                    resultDiv.className = 'result success';
+                } else {
+                    resultDiv.innerHTML = '登录失败：' + data.message;
+                    resultDiv.className = 'result error';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = '登录错误：' + error.message;
+                resultDiv.className = 'result error';
+            }
+        }
+
+        async function loadHomeData() {
+            const resultDiv = document.getElementById('home-result');
+            resultDiv.innerHTML = '加载中...';
+            
+            token = localStorage.getItem('adminToken');
+            
+            if (!token) {
+                resultDiv.innerHTML = '请先登录！';
+                resultDiv.className = 'result error';
+                return;
+            }
+            
+            const stats = {
+                merchantCount: 0,
+                dishCount: 0,
+                orderCount: 0,
+                userCount: 0
+            };
+            
+            let html = '';
+            
+            try {
+                html += '=== 加载门店统计 ===\n';
+                const merchants = await fetch('/api/merchant/list', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': token
+                    },
+                    body: JSON.stringify({})
+                });
+                const merchantsData = await merchants.json();
+                
+                if (merchantsData.code === 200) {
+                    stats.merchantCount = Array.isArray(merchantsData.data) ? merchantsData.data.length : 0;
+                    html += '成功！门店数量: ' + stats.merchantCount + '\n\n';
+                } else {
+                    html += '失败：' + merchantsData.message + '\n\n';
+                }
+            } catch (error) {
+                html += '错误：' + error.message + '\n\n';
+            }
+            
+            try {
+                html += '=== 加载菜品统计 ===\n';
+                const dishes = await fetch('/api/dish/list', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': token
+                    },
+                    body: JSON.stringify({})
+                });
+                const dishesData = await dishes.json();
+                
+                if (dishesData.code === 200) {
+                    stats.dishCount = Array.isArray(dishesData.data) ? dishesData.data.length : 0;
+                    html += '成功！菜品数量: ' + stats.dishCount + '\n\n';
+                } else {
+                    html += '失败：' + dishesData.message + '\n\n';
+                }
+            } catch (error) {
+                html += '错误：' + error.message + '\n\n';
+            }
+            
+            try {
+                html += '=== 加载用户统计 ===\n';
+                const users = await fetch('/api/user/list', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': token
+                    },
+                    body: JSON.stringify({})
+                });
+                const usersData = await users.json();
+                
+                if (usersData.code === 200) {
+                    stats.userCount = Array.isArray(usersData.data) ? usersData.data.length : 0;
+                    html += '成功！用户数量: ' + stats.userCount + '\n\n';
+                } else {
+                    html += '失败：' + usersData.message + '\n\n';
+                }
+            } catch (error) {
+                html += '错误：' + error.message + '\n\n';
+            }
+            
+            try {
+                html += '=== 加载订单统计 ===\n';
+                const orders = await fetch('/api/order/merchant', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': token
+                    },
+                    body: JSON.stringify({ merchantId: 1, page: 1, size: 5 })
+                });
+                const ordersData = await orders.json();
+                
+                if (ordersData.code === 200) {
+                    stats.orderCount = ordersData.data.total || 0;
+                    html += '成功！订单数量: ' + stats.orderCount + '\n\n';
+                } else {
+                    html += '失败：' + ordersData.message + '\n\n';
+                }
+            } catch (error) {
+                html += '错误：' + error.message + '\n\n';
+            }
+            
+            html += '=== 统计汇总 ===\n';
+            html += '门店总数: ' + stats.merchantCount + '\n';
+            html += '菜品总数: ' + stats.dishCount + '\n';
+            html += '用户总数: ' + stats.userCount + '\n';
+            html += '订单总数: ' + stats.orderCount + '\n';
+            
+            resultDiv.innerHTML = html;
+            resultDiv.className = 'result success';
+        }
+    </script>
+</body>
+</html>

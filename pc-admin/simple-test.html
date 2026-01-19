@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>简化测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .stat {
+            display: inline-block;
+            width: 150px;
+            margin: 10px;
+            padding: 15px;
+            border: 2px solid #333;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .label {
+            font-size: 14px;
+            color: #666;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>简化数据测试</h1>
+    <div>
+        <div class="stat">
+            <div id="merchantCount">-</div>
+            <div class="label">门店</div>
+        </div>
+        <div class="stat">
+            <div id="dishCount">-</div>
+            <div class="label">菜品</div>
+        </div>
+        <div class="stat">
+            <div id="orderCount">-</div>
+            <div class="label">订单</div>
+        </div>
+        <div class="stat">
+            <div id="userCount">-</div>
+            <div class="label">用户</div>
+        </div>
+    </div>
+    <div id="log" style="margin-top: 20px; padding: 10px; background: #f5f5f5;"></div>
+    
+    <script>
+        const logDiv = document.getElementById('log');
+        
+        function log(message) {
+            console.log(message);
+            logDiv.innerHTML += '<div>' + message + '</div>';
+        }
+        
+        async function loadStats() {
+            log('开始加载统计数据...');
+            
+            try {
+                log('加载门店数据...');
+                const merchantRes = await fetch('http://localhost:8081/api/merchant/list', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: '{}'
+                });
+                const merchantData = await merchantRes.json();
+                log('门店响应: ' + JSON.stringify(merchantData).substring(0, 100) + '...');
+                document.getElementById('merchantCount').textContent = merchantData.data ? merchantData.data.length : 0;
+            } catch (e) {
+                log('门店错误: ' + e.message);
+            }
+            
+            try {
+                log('加载菜品数据...');
+                const dishRes = await fetch('http://localhost:8081/api/dish/list', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: '{}'
+                });
+                const dishData = await dishRes.json();
+                log('菜品响应: ' + JSON.stringify(dishData).substring(0, 100) + '...');
+                document.getElementById('dishCount').textContent = dishData.data ? dishData.data.length : 0;
+            } catch (e) {
+                log('菜品错误: ' + e.message);
+            }
+            
+            try {
+                log('加载用户数据...');
+                const userRes = await fetch('http://localhost:8081/api/user/list', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: '{}'
+                });
+                const userData = await userRes.json();
+                log('用户响应: ' + JSON.stringify(userData).substring(0, 100) + '...');
+                document.getElementById('userCount').textContent = userData.data ? userData.data.length : 0;
+            } catch (e) {
+                log('用户错误: ' + e.message);
+            }
+            
+            try {
+                log('加载订单数据...');
+                const orderRes = await fetch('http://localhost:8081/api/order/merchant', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ merchantId: 1, page: 1, size: 5 })
+                });
+                const orderData = await orderRes.json();
+                log('订单响应: ' + JSON.stringify(orderData).substring(0, 100) + '...');
+                document.getElementById('orderCount').textContent = orderData.data ? orderData.data.total : 0;
+            } catch (e) {
+                log('订单错误: ' + e.message);
+            }
+        }
+        
+        loadStats();
+    </script>
+</body>
+</html>

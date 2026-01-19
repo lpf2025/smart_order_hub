@@ -1,0 +1,125 @@
+page {
+  background-color: #f5f5f5;
+}
+
+.container {
+  padding: 20rpx;
+  padding-bottom: 120rpx;
+}
+
+.avatar-section {
+  background-color: white;
+  border-radius: 16rpx;
+  padding: 40rpx;
+  margin-bottom: 20rpx;
+  display: flex;
+  justify-content: center;
+}
+
+.avatar-wrapper {
+  position: relative;
+  width: 200rpx;
+  height: 200rpx;
+}
+
+.avatar {
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 100rpx;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.avatar-placeholder {
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 100rpx;
+  background-color: rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 32rpx;
+}
+
+.avatar-mask {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60rpx;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-bottom-left-radius: 100rpx;
+  border-bottom-right-radius: 100rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-text {
+  color: white;
+  font-size: 24rpx;
+}
+
+.form-section {
+  background-color: white;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+}
+
+.form-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.form-item:last-child {
+  border-bottom: none;
+}
+
+.form-label {
+  width: 140rpx;
+  font-size: 28rpx;
+  color: #333;
+  flex-shrink: 0;
+}
+
+.form-input {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.button-section {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: white;
+  padding: 20rpx 30rpx;
+  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
+  box-shadow: 0 -4rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.save-btn {
+  background-color: #ff4d4f;
+  color: white;
+  text-align: center;
+  padding: 24rpx;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+  font-weight: bold;
+  margin-bottom: 20rpx;
+}
+
+.logout-btn {
+  background-color: white;
+  color: #ff4d4f;
+  text-align: center;
+  padding: 24rpx;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+  font-weight: bold;
+  border: 1rpx solid #ff4d4f;
+}

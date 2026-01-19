@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>首页数据测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .stat-card {
+            display: inline-block;
+            width: 200px;
+            margin: 10px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #333;
+        }
+        .stat-label {
+            font-size: 14px;
+            color: #999;
+            margin-top: 10px;
+        }
+        .error {
+            color: red;
+            padding: 10px;
+            background: #fee;
+            border: 1px solid #fcc;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>首页数据测试</h1>
+    <div id="stats">
+        <div class="stat-card">
+            <div class="stat-value" id="merchantCount">-</div>
+            <div class="stat-label">门店总数</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="dishCount">-</div>
+            <div class="stat-label">菜品总数</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="orderCount">-</div>
+            <div class="stat-label">订单总数</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="userCount">-</div>
+            <div class="stat-label">用户总数</div>
+        </div>
+    </div>
+    <div id="errors"></div>
+    
+    <script>
+        async function loadStats() {
+            const errors = [];
+            
+            try {
+                console.log('正在加载门店数据...');
+                const merchantsResponse = await fetch('http://localhost:8081/api/merchant/list', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: '{}'
+                });
+                const merchantsData = await merchantsResponse.json();
+                console.log('门店数据:', merchantsData);
+                if (merchantsData.code === 200) {
+                    document.getElementById('merchantCount').textContent = merchantsData.data.length;
+                } else {
+                    errors.push('门店数据加载失败: ' + merchantsData.message);
+                }
+            } catch (error) {
+                console.error('门店数据加载失败', error);
+                errors.push('门店数据加载失败: ' + error.message);
+            }
+            
+            try {
+                console.log('正在加载菜品数据...');
+                const dishesResponse = await fetch('http://localhost:8081/api/dish/list', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: '{}'
+                });
+                const dishesData = await dishesResponse.json();
+                console.log('菜品数据:', dishesData);
+                if (dishesData.code === 200) {
+                    document.getElementById('dishCount').textContent = dishesData.data.length || 0;
+                } else {
+                    errors.push('菜品数据加载失败: ' + dishesData.message);
+                }
+            } catch (error) {
+                console.error('菜品数据加载失败', error);
+                errors.push('菜品数据加载失败: ' + error.message);
+            }
+            
+            try {
+                console.log('正在加载用户数据...');
+                const usersResponse = await fetch('http://localhost:8081/api/user/list', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: '{}'
+                });
+                const usersData = await usersResponse.json();
+                console.log('用户数据:', usersData);
+                if (usersData.code === 200) {
+                    document.getElementById('userCount').textContent = usersData.data.length || 0;
+                } else {
+                    errors.push('用户数据加载失败: ' + usersData.message);
+                }
+            } catch (error) {
+                console.error('用户数据加载失败', error);
+                errors.push('用户数据加载失败: ' + error.message);
+            }
+            
+            try {
+                console.log('正在加载订单数据...');
+                const ordersResponse = await fetch('http://localhost:8081/api/order/merchant', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ merchantId: 1, page: 1, size: 5 })
+                });
+                const ordersData = await ordersResponse.json();
+                console.log('订单数据:', ordersData);
+                if (ordersData.code === 200) {
+                    document.getElementById('orderCount').textContent = ordersData.data.total || 0;
+                } else {
+                    errors.push('订单数据加载失败: ' + ordersData.message);
+                }
+            } catch (error) {
+                console.error('订单数据加载失败', error);
+                errors.push('订单数据加载失败: ' + error.message);
+            }
+            
+            if (errors.length > 0) {
+                const errorDiv = document.getElementById('errors');
+                errors.forEach(error => {
+                    const errorItem = document.createElement('div');
+                    errorItem.className = 'error';
+                    errorItem.textContent = error;
+                    errorDiv.appendChild(errorItem);
+                });
+            }
+        }
+        
+        loadStats();
+    </script>
+</body>
+</html>

@@ -1,0 +1,1 @@
+ALTER TABLE t_dish ADD COLUMN original_price DECIMAL(10,2) DEFAULT NULL COMMENT '原价' AFTER price;

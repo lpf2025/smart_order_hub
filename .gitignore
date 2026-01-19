@@ -1,0 +1,48 @@
+# Maven
+backend/target/
+backend/.mvn/
+backend/mvnw
+backend/mvnw.cmd
+backend/.DS_Store
+
+# Node
+pc-admin/node_modules/
+pc-admin/dist/
+pc-admin/.DS_Store
+miniprogram-merchant/node_modules/
+miniprogram-user/node_modules/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+
+# Logs
+*.log
+backend/app.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build
+dist/
+target/
+
+# Temp
+*.tmp
+*.swp
+*~
+
+# Documents
+*.docx
+*.txt
+~$*
+
+# Scripts
+deploy.sh
+upload-jar.ps1
+test-api.bat
+maven-settings.xml
