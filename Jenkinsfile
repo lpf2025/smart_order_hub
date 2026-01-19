@@ -97,11 +97,11 @@ pipeline {
                     # 等待服务启动
                     sleep 30
                     
-                    # 检查后端服务 - 使用端口检查
-                    nc -z -w5 ${SERVER_HOST} ${JAR_PORT} || exit 1
+                    # 检查后端服务
+                    curl -f http://${SERVER_HOST}:${JAR_PORT}/api/health || exit 1
                     
-                    # 检查前端服务 - 使用端口检查
-                    nc -z -w5 ${SERVER_HOST} 8082 || exit 1
+                    # 检查前端服务
+                    curl -f http://${SERVER_HOST}:8082/ || exit 1
                     
                     echo '健康检查通过'
                 """
