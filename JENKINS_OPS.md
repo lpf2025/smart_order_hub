@@ -36,7 +36,7 @@
 ### 1.2 安装必要插件
 
 1. 点击左侧"Manage Jenkins"
-2. 点击"Manage Plugins"
+2. 点击"插件管理"
 3. 搜索并安装以下插件：
    - **Git Plugin**
    - **Pipeline Plugin**
