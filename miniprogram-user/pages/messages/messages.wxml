@@ -1,0 +1,48 @@
+<view class="container">
+  <view class="header">
+    <text class="title">消息通知</text>
+  </view>
+
+  <view class="tabs">
+    <view 
+      class="tab-item {{currentTab === index ? 'active' : ''}}" 
+      wx:for="{{tabs}}" 
+      wx:key="index"
+      bindtap="switchTab"
+      data-index="{{index}}"
+    >
+      {{item}}
+    </view>
+  </view>
+
+  <view class="message-list" wx:if="{{messages.length > 0}}">
+    <view 
+      class="message-item" 
+      wx:for="{{messages}}" 
+      wx:key="id"
+      bindtap="goToDetail"
+      data-index="{{index}}"
+      bindlongpress="onLongPress"
+      data-index="{{index}}"
+    >
+      <view class="message-left">
+        <view class="message-icon {{item.type}}">
+          <text class="icon">{{item.type === 'order' ? '📦' : '🎁'}}</text>
+        </view>
+        <view class="unread-dot" wx:if="{{item.unread}}"></view>
+      </view>
+      <view class="message-right">
+        <view class="message-header">
+          <text class="message-title">{{item.title}}</text>
+          <text class="message-time">{{item.time}}</text>
+        </view>
+        <view class="message-content">{{item.content}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="empty-state" wx:if="{{messages.length === 0}}">
+    <text class="empty-icon">📭</text>
+    <text class="empty-text">暂无消息</text>
+  </view>
+</view>

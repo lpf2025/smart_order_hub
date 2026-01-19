@@ -1,0 +1,50 @@
+<view class="container">
+  <view class="form-item">
+    <view class="label">收货人</view>
+    <input 
+      class="input" 
+      placeholder="请输入收货人姓名" 
+      value="{{receiverName}}"
+      bindinput="onReceiverNameInput"
+    />
+  </view>
+
+  <view class="form-item">
+    <view class="label">联系电话</view>
+    <input 
+      class="input" 
+      type="number"
+      placeholder="请输入联系电话" 
+      value="{{receiverPhone}}"
+      bindinput="onReceiverPhoneInput"
+    />
+  </view>
+
+  <view class="form-item">
+    <view class="label">省市区</view>
+    <picker mode="region" bindchange="onRegionChange" value="{{region}}">
+      <view class="picker">
+        {{region[0] || '请选择省市区'}} {{region[1] || ''}} {{region[2] || ''}}
+      </view>
+    </picker>
+    <button class="location-btn" bindtap="chooseLocation">定位选择</button>
+  </view>
+
+  <view class="form-item">
+    <view class="label">详细地址</view>
+    <textarea 
+      class="textarea" 
+      placeholder="请输入详细地址" 
+      value="{{detailAddress}}"
+      bindinput="onDetailAddressInput"
+      maxlength="100"
+    ></textarea>
+  </view>
+
+  <view class="form-item switch-item">
+    <view class="label">设为默认地址</view>
+    <switch checked="{{isDefault}}" bindchange="onDefaultChange" />
+  </view>
+
+  <button class="submit-btn" bindtap="submit">保存</button>
+</view>

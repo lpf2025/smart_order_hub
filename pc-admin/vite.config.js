@@ -6,7 +6,7 @@ export default defineConfig(({ mode }) => {
   const isProd = mode === 'production'
   
   return {
-    base: isProd ? '/admin/' : '/',
+    base: isProd ? 'http://smartcan.com.cn:8082/' : '/',
     plugins: [vue()],
     resolve: {
       alias: {

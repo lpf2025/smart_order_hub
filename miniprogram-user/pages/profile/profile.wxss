@@ -1,0 +1,174 @@
+page {
+  background-color: #f5f5f5;
+}
+
+.container {
+  min-height: 100vh;
+  padding-bottom: 120rpx;
+}
+
+.user-info-bar {
+  background-color: #FF4D4F;
+  padding: 40rpx 30rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 200rpx;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 40rpx;
+  background-color: rgba(255, 255, 255, 0.3);
+  margin-right: 20rpx;
+}
+
+.avatar-placeholder {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 40rpx;
+  background-color: rgba(255, 255, 255, 0.5);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36rpx;
+  font-weight: bold;
+  margin-right: 20rpx;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.nickname {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 8rpx;
+}
+
+.phone {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.settings-btn {
+  width: 96rpx;
+  height: 96rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.settings-icon {
+  font-size: 48rpx;
+  color: white;
+}
+
+.order-categories {
+  background-color: white;
+  display: flex;
+  padding: 30rpx 0;
+  margin-bottom: 20rpx;
+}
+
+.category-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.category-icon-wrapper {
+  position: relative;
+  margin-bottom: 10rpx;
+}
+
+.category-icon {
+  font-size: 48rpx;
+}
+
+.badge {
+  position: absolute;
+  top: -10rpx;
+  right: -10rpx;
+  background-color: #FF4D4F;
+  color: white;
+  font-size: 20rpx;
+  min-width: 40rpx;
+  height: 40rpx;
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 8rpx;
+}
+
+.category-name {
+  font-size: 22rpx;
+  color: #1F2329;
+}
+
+.function-entries {
+  background-color: white;
+  margin-bottom: 20rpx;
+}
+
+.entry-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 30rpx;
+  border-bottom: 1rpx solid #C9CDD4;
+  height: 96rpx;
+}
+
+.entry-item:last-child {
+  border-bottom: none;
+}
+
+.entry-left {
+  display: flex;
+  align-items: center;
+}
+
+.entry-icon {
+  font-size: 40rpx;
+  margin-right: 20rpx;
+}
+
+.entry-name {
+  font-size: 28rpx;
+  color: #1F2329;
+}
+
+.entry-arrow {
+  font-size: 48rpx;
+  color: #86909C;
+}
+
+.footer-links {
+  display: flex;
+  justify-content: space-around;
+  padding: 40rpx 0;
+}
+
+.footer-link {
+  flex: 1;
+  text-align: center;
+}
+
+.footer-text {
+  font-size: 22rpx;
+  color: #86909C;
+}

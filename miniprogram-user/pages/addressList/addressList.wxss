@@ -1,0 +1,128 @@
+page {
+  background-color: #f5f5f5;
+}
+
+.container {
+  padding: 20rpx;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30rpx;
+}
+
+.title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.add-btn {
+  background-color: #ff4d4f;
+  color: white;
+  border-radius: 50rpx;
+  padding: 20rpx 40rpx;
+  font-size: 28rpx;
+}
+
+.address-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.address-item {
+  background-color: white;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.address-item::after {
+  content: '';
+  position: absolute;
+  right: 30rpx;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20rpx;
+  height: 20rpx;
+  border-top: 4rpx solid #ccc;
+  border-right: 4rpx solid #ccc;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.address-item:active {
+  background-color: #f5f5f5;
+}
+
+.address-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.receiver-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.receiver-name {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.receiver-phone {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.address-actions {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.default-badge {
+  background-color: #e6f7ff;
+  color: #1890ff;
+  padding: 8rpx 16rpx;
+  border-radius: 8rpx;
+  font-size: 22rpx;
+}
+
+.action-text {
+  font-size: 26rpx;
+  color: #1890ff;
+}
+
+.action-text.delete {
+  color: #ff4d4f;
+}
+
+.address-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+  font-size: 28rpx;
+  color: #666;
+}
+
+.set-default {
+  font-size: 26rpx;
+  color: #999;
+  margin-top: 20rpx;
+}
+
+.empty {
+  text-align: center;
+  padding: 100rpx 0;
+  color: #999;
+  font-size: 28rpx;
+}

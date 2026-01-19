@@ -1,0 +1,130 @@
+<view class="container">
+  <view class="header">
+    <text class="title">订单确认</text>
+  </view>
+
+  <view class="order-type">
+    <view 
+      wx:if="{{serviceModes && serviceModes.includes(1)}}"
+      class="type-item {{orderType === 1 ? 'active' : ''}}" 
+      bindtap="selectOrderType"
+      data-type="1"
+    >
+      <view class="type-icon">🛵️</view>
+      <view class="type-text">外卖</view>
+      <view class="type-info" wx:if="{{merchant.minDeliveryAmount}}">起送¥{{merchant.minDeliveryAmount}}</view>
+    </view>
+    <view 
+      wx:if="{{serviceModes && serviceModes.includes(2)}}"
+      class="type-item {{orderType === 2 ? 'active' : ''}}" 
+      bindtap="selectOrderType"
+      data-type="2"
+    >
+      <view class="type-icon">🥡</view>
+      <view class="type-text">自取</view>
+      <view class="type-info" wx:if="{{merchant.minTakeoutAmount}}">起购¥{{merchant.minTakeoutAmount}}</view>
+    </view>
+  </view>
+
+  <view wx:if="{{orderType === 1}}" class="address-section">
+    <view class="section-title">收货地址</view>
+    <view wx:if="{{selectedAddress}}" class="address-card" bindtap="selectAddress">
+      <view class="address-header">
+        <text class="receiver-name">{{selectedAddress.receiverName}}</text>
+        <text class="receiver-phone">{{selectedAddress.receiverPhone}}</text>
+      </view>
+      <view class="address-detail">
+        <text>{{selectedAddress.province}}{{selectedAddress.city}}{{selectedAddress.district}}</text>
+        <text>{{selectedAddress.detailAddress}}</text>
+      </view>
+      <view class="change-address">点击更换地址</view>
+    </view>
+    <view wx:else class="address-empty" bindtap="selectAddress">
+      <text class="add-icon">+</text>
+      <text class="add-text">添加收货地址</text>
+    </view>
+  </view>
+
+  <view wx:if="{{orderType === 1 && deliveryTypes.length > 1}}" class="delivery-type-section">
+    <view class="section-title">配送方式</view>
+    <view class="delivery-type-list">
+      <view 
+        class="delivery-type-item {{deliveryType === 'immediate' ? 'active' : ''}}" 
+        bindtap="selectDeliveryType"
+        data-type="immediate"
+      >
+        <view class="type-icon">⚡</view>
+        <view class="type-name">立即配送</view>
+        <view class="type-desc">预计{{estimatedDeliveryTime}}送达</view>
+      </view>
+      <view 
+        class="delivery-type-item {{deliveryType === 'reserve' ? 'active' : ''}}" 
+        bindtap="selectDeliveryType"
+        data-type="reserve"
+      >
+        <view class="type-icon">🕐</view>
+        <view class="type-name">预约配送</view>
+        <view class="type-desc">选择配送时间</view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{orderType === 1 && deliveryType === 'reserve'}}" class="reserve-time-section">
+    <view class="section-title">选择配送时间</view>
+    <picker mode="multiSelector" range="{{timeRange}}" range-key="label" bindchange="onTimeChange" bindcolumnchange="onTimeColumnChange" value="{{timeIndex}}">
+      <view class="reserve-time-picker">
+        <text class="time-label">配送时间：</text>
+        <text class="time-value">{{selectedTime || '请选择配送时间'}}</text>
+        <text class="time-arrow">▼</text>
+      </view>
+    </picker>
+  </view>
+
+  <view wx:if="{{orderType === 2}}" class="takeout-info-section">
+    <view class="section-title">取餐信息</view>
+    <view class="takeout-info-card">
+      <view class="info-row">
+        <text class="info-label">取餐地址</text>
+        <text class="info-value">{{merchant.address}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">联系电话</text>
+        <text class="info-value">{{merchant.phone}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">预计取餐时间</text>
+        <text class="info-value">{{merchant.takeoutTime}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="cart-list">
+    <view class="cart-item" wx:for="{{cart}}" wx:key="id">
+      <image class="item-image" src="{{item.imageUrl || '/images/default-dish.png'}}" mode="aspectFill"></image>
+      <view class="item-info">
+        <view class="item-name">{{item.name}}</view>
+        <view class="item-price">¥{{item.price}}</view>
+      </view>
+      <view class="item-quantity">x{{item.quantity}}</view>
+    </view>
+  </view>
+
+  <view class="remark-section">
+    <view class="section-title">备注</view>
+    <textarea 
+      class="remark-input" 
+      placeholder="请输入备注信息，如：少辣、不要香菜等"
+      value="{{remark}}"
+      bindinput="onRemarkInput"
+      maxlength="100"
+    ></textarea>
+  </view>
+
+  <view class="footer">
+    <view class="total-info">
+      <text class="total-label">共{{cartCount}}件</text>
+      <text class="total-amount">合计：¥{{cartTotal}}</text>
+    </view>
+    <button class="submit-btn" bindtap="submitOrder">提交订单</button>
+  </view>
+</view>

@@ -1,0 +1,104 @@
+<view class="container">
+  <view class="tabs">
+    <view 
+      class="tab-item {{activeTab === 'general' ? 'active' : ''}}" 
+      bindtap="switchTab" 
+      data-tab="general"
+    >
+      通用设置
+    </view>
+    <view 
+      class="tab-item {{activeTab === 'payment' ? 'active' : ''}}" 
+      bindtap="switchTab" 
+      data-tab="payment"
+    >
+      支付设置
+    </view>
+    <view 
+      class="tab-item {{activeTab === 'message' ? 'active' : ''}}" 
+      bindtap="switchTab" 
+      data-tab="message"
+    >
+      消息设置
+    </view>
+  </view>
+
+  <view class="settings-content">
+    <view class="settings-group" wx:if="{{activeTab === 'message'}}">
+      <view class="settings-item">
+        <view class="settings-left">
+          <text class="settings-icon">📦</text>
+          <text class="settings-label">订单通知</text>
+        </view>
+        <switch 
+          class="settings-switch" 
+          checked="{{settings.orderNotification}}" 
+          bindchange="toggleOrderNotification"
+          color="#FF4D4F"
+        />
+      </view>
+      <view class="settings-item">
+        <view class="settings-left">
+          <text class="settings-icon">🎁</text>
+          <text class="settings-label">活动通知</text>
+        </view>
+        <switch 
+          class="settings-switch" 
+          checked="{{settings.activityNotification}}" 
+          bindchange="toggleActivityNotification"
+          color="#FF4D4F"
+        />
+      </view>
+    </view>
+
+    <view class="settings-group" wx:if="{{activeTab === 'payment'}}">
+      <view class="settings-item">
+        <view class="settings-left">
+          <text class="settings-icon">💬</text>
+          <text class="settings-label">微信支付</text>
+        </view>
+        <switch 
+          class="settings-switch" 
+          checked="{{settings.wechatPay}}" 
+          bindchange="toggleWechatPay"
+          color="#FF4D4F"
+        />
+      </view>
+      <view class="settings-item">
+        <view class="settings-left">
+          <text class="settings-icon">💰</text>
+          <text class="settings-label">支付宝</text>
+        </view>
+        <switch 
+          class="settings-switch" 
+          checked="{{settings.alipayPay}}" 
+          bindchange="toggleAlipayPay"
+          color="#FF4D4F"
+        />
+      </view>
+    </view>
+
+    <view class="settings-group" wx:if="{{activeTab === 'general'}}">
+      <view class="settings-item">
+        <view class="settings-left">
+          <text class="settings-icon">🌙</text>
+          <text class="settings-label">深色模式</text>
+        </view>
+        <switch class="settings-switch" color="#FF4D4F" />
+      </view>
+      <view class="settings-item">
+        <view class="settings-left">
+          <text class="settings-icon">🔄</text>
+          <text class="settings-label">自动更新</text>
+        </view>
+        <switch class="settings-switch" checked color="#FF4D4F" />
+      </view>
+    </view>
+  </view>
+
+  <view class="logout-section">
+    <view class="logout-btn" bindtap="logout">
+      <text class="logout-text">退出登录</text>
+    </view>
+  </view>
+</view>

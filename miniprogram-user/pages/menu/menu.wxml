@@ -1,0 +1,85 @@
+<view class="container">
+  <view class="service-mode-bar">
+    <view 
+      wx:if="{{serviceModes && serviceModes.includes(1)}}"
+      class="mode-item {{serviceMode === 1 ? 'active' : ''}}" 
+      bindtap="changeServiceMode"
+      data-mode="1"
+    >
+      <text class="mode-icon">🛵️</text>
+      <text class="mode-text">外卖</text>
+      <text class="mode-info" wx:if="{{merchant.minDeliveryAmount}}">起送¥{{merchant.minDeliveryAmount}}</text>
+    </view>
+    <view 
+      wx:if="{{serviceModes && serviceModes.includes(2)}}"
+      class="mode-item {{serviceMode === 2 ? 'active' : ''}}" 
+      bindtap="changeServiceMode"
+      data-mode="2"
+    >
+      <text class="mode-icon">🥡</text>
+      <text class="mode-text">自取</text>
+      <text class="mode-info" wx:if="{{merchant.minTakeoutAmount}}">起购¥{{merchant.minTakeoutAmount}}</text>
+    </view>
+  </view>
+
+  <view class="menu-layout">
+    <scroll-view class="category-list" scroll-y>
+      <view 
+        class="category-item {{currentCategory === item ? 'active' : ''}}" 
+        wx:for="{{categories}}" 
+        wx:key="*this"
+        bindtap="selectCategory"
+        data-category="{{item}}"
+      >
+        {{item}}
+      </view>
+    </scroll-view>
+
+    <scroll-view class="dish-list" scroll-y>
+      <view 
+        class="dish-item" 
+        wx:for="{{dishes}}" 
+        wx:key="id"
+      >
+        <image class="dish-image" src="{{item.imageUrl || '/images/default-dish.png'}}" mode="aspectFill"></image>
+        <view class="dish-info">
+          <view class="dish-name">{{item.name}}</view>
+          <view class="dish-description">{{item.description}}</view>
+          <view class="dish-sales">月售{{item.monthSales || 0}}</view>
+          <view class="dish-footer">
+            <view class="dish-price-section">
+              <view class="dish-price">¥{{item.price}}</view>
+              <view class="dish-discount" wx:if="{{item.originalPrice > item.price}}">
+                <text class="discount-text">{{item.discountText}}</text>
+                <text class="original-price">¥{{item.originalPrice}}</text>
+              </view>
+            </view>
+            <view class="dish-actions">
+              <view 
+                class="action-btn minus {{item.quantity > 0 ? 'show' : ''}}" 
+                bindtap="decreaseQuantity"
+                data-id="{{item.id}}"
+              >-</view>
+              <view class="quantity {{item.quantity > 0 ? 'show' : ''}}">{{item.quantity}}</view>
+              <view 
+                class="action-btn plus" 
+                bindtap="increaseQuantity"
+                data-id="{{item.id}}"
+              >+</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <view class="cart-bar" wx:if="{{cartCount > 0}}">
+    <view class="cart-info" bindtap="showCart">
+      <view class="cart-icon">
+        <text class="cart-count">{{cartCount}}</text>
+      </view>
+      <view class="cart-total">¥{{cartTotal}}</view>
+    </view>
+    <view class="checkout-btn" bindtap="goToCheckout">去结算</view>
+  </view>
+</view>

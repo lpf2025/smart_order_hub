@@ -1,0 +1,450 @@
+page {
+  background-color: #f5f5f5;
+}
+
+.container {
+  padding: 20rpx;
+  padding-bottom: 120rpx;
+}
+
+.order-status-card {
+  background: linear-gradient(135deg, #ff4d4f 0%, #ff7875 100%);
+  border-radius: 16rpx;
+  padding: 60rpx 30rpx;
+  text-align: center;
+  color: white;
+  margin-bottom: 20rpx;
+}
+
+.status-icon {
+  width: 120rpx;
+  height: 120rpx;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20rpx;
+}
+
+.status-icon .icon {
+  font-size: 60rpx;
+  font-weight: bold;
+}
+
+.status-text {
+  font-size: 36rpx;
+  font-weight: bold;
+  margin-bottom: 10rpx;
+}
+
+.status-time {
+  font-size: 24rpx;
+  opacity: 0.8;
+}
+
+.order-info-card,
+.order-items-card,
+.order-summary-card,
+.delivery-address-card,
+.delivery-status-card,
+.takeout-info-card {
+  background-color: white;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+}
+
+.card-title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+  font-size: 26rpx;
+}
+
+.info-row:last-child {
+  margin-bottom: 0;
+}
+
+.info-label {
+  color: #999;
+}
+
+.info-value {
+  color: #333;
+}
+
+.item-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.item-row {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.item-row:last-child {
+  border-bottom: none;
+}
+
+.item-info {
+  flex: 1;
+}
+
+.item-name {
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.item-spec {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.item-quantity {
+  font-size: 26rpx;
+  color: #666;
+  margin: 0 20rpx;
+}
+
+.item-price {
+  font-size: 28rpx;
+  color: #ff4d4f;
+  font-weight: bold;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+  font-size: 28rpx;
+}
+
+.summary-row:last-child {
+  margin-bottom: 0;
+}
+
+.summary-label {
+  color: #666;
+}
+
+.summary-value {
+  color: #333;
+}
+
+.summary-value.total {
+  color: #ff4d4f;
+  font-weight: bold;
+  font-size: 32rpx;
+}
+
+.order-actions {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: white;
+  display: flex;
+  justify-content: flex-end;
+  gap: 20rpx;
+  padding: 20rpx 30rpx;
+  box-shadow: 0 -4rpx 12rpx rgba(0, 0, 0, 0.08);
+  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
+}
+
+.action-btn {
+  padding: 16rpx 32rpx;
+  border-radius: 8rpx;
+  font-size: 26rpx;
+  border: 1rpx solid #d9d9d9;
+}
+
+.action-btn.cancel {
+  color: #ff4d4f;
+  border-color: #ff4d4f;
+}
+
+.action-btn.primary {
+  background-color: #ff4d4f;
+  color: white;
+  border-color: #ff4d4f;
+}
+
+.loading {
+  text-align: center;
+  padding: 200rpx 0;
+  color: #999;
+  font-size: 28rpx;
+}
+
+.pay-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: flex-end;
+  z-index: 1000;
+}
+
+.pay-content {
+  width: 100%;
+  background-color: white;
+  border-radius: 32rpx 32rpx 0 0;
+  padding: 40rpx 30rpx;
+  padding-bottom: calc(40rpx + env(safe-area-inset-bottom));
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.pay-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40rpx;
+}
+
+.pay-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.pay-close {
+  font-size: 48rpx;
+  color: #999;
+  line-height: 1;
+}
+
+.pay-amount {
+  text-align: center;
+  padding: 30rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+  margin-bottom: 30rpx;
+}
+
+.amount-label {
+  display: block;
+  font-size: 26rpx;
+  color: #999;
+  margin-bottom: 10rpx;
+}
+
+.amount-value {
+  display: block;
+  font-size: 56rpx;
+  font-weight: bold;
+  color: #ff4d4f;
+}
+
+.pay-methods {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+  margin-bottom: 40rpx;
+}
+
+.pay-method-item {
+  display: flex;
+  align-items: center;
+  padding: 30rpx;
+  background-color: #f9f9f9;
+  border-radius: 16rpx;
+  border: 2rpx solid transparent;
+  transition: all 0.3s;
+}
+
+.pay-method-item.active {
+  background-color: #fff2f0;
+  border-color: #ff4d4f;
+}
+
+.pay-method-icon {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20rpx;
+}
+
+.pay-method-icon.wechat {
+  background-color: #07c160;
+}
+
+.pay-method-icon.alipay {
+  background-color: #1677ff;
+}
+
+.pay-method-icon .icon {
+  font-size: 40rpx;
+  color: white;
+}
+
+.pay-method-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.pay-method-name {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: bold;
+  margin-bottom: 6rpx;
+}
+
+.pay-method-desc {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.pay-method-check {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  border: 2rpx solid #d9d9d9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pay-method-item.active .pay-method-check {
+  background-color: #ff4d4f;
+  border-color: #ff4d4f;
+}
+
+.check-icon {
+  color: white;
+  font-size: 24rpx;
+  font-weight: bold;
+}
+
+.pay-btn {
+  width: 100%;
+  background-color: #ff4d4f;
+  color: white;
+  border-radius: 50rpx;
+  padding: 25rpx;
+  font-size: 32rpx;
+  font-weight: bold;
+  border: none;
+}
+
+.pay-btn[disabled] {
+  background-color: #d9d9d9;
+  color: #999;
+}
+
+.delivery-address-card {
+  margin-bottom: 20rpx;
+}
+
+.address-info {
+  padding: 10rpx 0;
+}
+
+.receiver-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.receiver-name {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+  margin-right: 20rpx;
+}
+
+.receiver-phone {
+  font-size: 26rpx;
+  color: #666;
+}
+
+.address-detail {
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.6;
+}
+
+.delivery-status-card {
+  margin-bottom: 20rpx;
+}
+
+.delivery-status-list {
+  display: flex;
+  flex-direction: column;
+  padding: 20rpx 0;
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 0;
+  position: relative;
+}
+
+.status-item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 12rpx;
+  top: 40rpx;
+  bottom: 0;
+  width: 2rpx;
+  background-color: #e8e8e8;
+}
+
+.status-item.active:not(:last-child)::after {
+  background-color: #ff4d4f;
+}
+
+.status-dot {
+  width: 24rpx;
+  height: 24rpx;
+  border-radius: 50%;
+  background-color: #e8e8e8;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+  z-index: 1;
+}
+
+.status-item.active .status-dot {
+  background-color: #ff4d4f;
+  box-shadow: 0 0 0 6rpx rgba(255, 77, 79, 0.2);
+}
+
+.status-label {
+  font-size: 26rpx;
+  color: #999;
+}
+
+.status-item.active .status-label {
+  color: #333;
+  font-weight: bold;
+}
+

@@ -1,0 +1,129 @@
+<view class="container">
+  <view class="header">
+    <view class="location-bar" bindtap="chooseLocation">
+      <text class="location-icon">📍</text>
+      <text class="location-text">{{location || '获取定位中...'}}</text>
+      <text class="location-arrow">▼</text>
+    </view>
+    <view class="search-bar" bindtap="goToSearch">
+      <text class="search-icon">🔍</text>
+      <text class="search-placeholder">搜索商家、商品名称</text>
+    </view>
+  </view>
+
+  <view class="category-bar">
+    <scroll-view class="category-scroll" scroll-x="true" show-scrollbar="false">
+      <view 
+        class="category-item {{currentCategory === item ? 'active' : ''}}" 
+        wx:for="{{categories}}" 
+        wx:key="*this"
+        bindtap="changeCategory"
+        data-category="{{item}}"
+      >
+        {{item}}
+      </view>
+    </scroll-view>
+  </view>
+
+  <view class="sort-bar">
+    <view 
+      class="sort-item {{sortType === 'comprehensive' ? 'active' : ''}}" 
+      bindtap="changeSortType"
+      data-type="comprehensive"
+    >
+      综合排序
+    </view>
+    <view 
+      class="sort-item {{sortType === 'sales' ? 'active' : ''}}" 
+      bindtap="changeSortType"
+      data-type="sales"
+    >
+      销量最高
+    </view>
+    <view 
+      class="sort-item {{sortType === 'distance' ? 'active' : ''}}" 
+      bindtap="changeSortType"
+      data-type="distance"
+    >
+      距离最近
+    </view>
+    <view class="sort-item" bindtap="showFilter">
+      筛选
+      <text class="filter-icon">⚙️</text>
+    </view>
+  </view>
+
+  <view class="merchant-list">
+    <view 
+      class="merchant-card" 
+      wx:for="{{merchantList}}" 
+      wx:key="id"
+      bindtap="goToMerchantDetail"
+      data-id="{{item.id}}"
+    >
+      <view class="merchant-card-content">
+        <image class="merchant-logo" src="{{item.logoUrl || '/images/default-merchant.png'}}" mode="aspectFill"></image>
+        <view class="merchant-info">
+          <view class="info-row1">
+            <text class="merchant-name">{{item.name}}</text>
+            <view class="reserve-tag {{item.canReserve ? '' : 'disable'}}">
+              {{item.canReserve ? '预定' : '不可预定'}}
+            </view>
+          </view>
+          <view class="info-row2">
+            <text class="rating">⭐ {{item.rating}}</text>
+            <text class="month-sales">月售{{item.monthSales}}</text>
+            <text class="per-capita">人均¥{{item.perCapita}}</text>
+          </view>
+          <view class="info-row3">
+            <text class="min-order">起送¥{{item.minOrder}}</text>
+            <text class="delivery-fee">配送¥{{item.deliveryFee}}</text>
+          </view>
+          <view class="info-row4" wx:if="{{item.salesRank || item.hasCoupon}}">
+            <text class="sales-rank" wx:if="{{item.salesRank}}">销量第{{item.salesRank}}</text>
+            <view class="coupon-tag" wx:if="{{item.hasCoupon}}" bindtap="receiveCoupon" catchtap="receiveCoupon" data-id="{{item.id}}">
+              {{item.couponReceived ? '已领取' : '神券'}}
+            </view>
+          </view>
+          <view class="info-row5">
+            <text class="delivery-time">{{item.deliveryTime}}分钟</text>
+            <text class="distance">{{item.distance}}km</text>
+          </view>
+        </view>
+      </view>
+      <view class="hot-dishes-area" wx:if="{{item.hotDishes && item.hotDishes.length > 0}}">
+        <text class="hot-dishes-title">最热菜品</text>
+        <view class="dishes-list">
+          <view 
+            class="dish-item" 
+            wx:for="{{item.hotDishes}}" 
+            wx:key="id"
+            wx:for-item="dish"
+            bindtap="goToDishDetail"
+            catchtap="goToDishDetail"
+            data-merchant-id="{{item.id}}"
+            data-dish-id="{{dish.id}}"
+          >
+            <image class="dish-img" src="{{dish.imageUrl || '/images/default-dish.png'}}" mode="aspectFill"></image>
+            <text class="dish-name">{{dish.name}}</text>
+            <text class="dish-price">¥{{dish.price}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="empty-state" wx:if="{{merchantList.length === 0 && !loading}}">
+    <text class="empty-icon">🏪</text>
+    <text class="empty-text">暂无商家</text>
+    <view class="retry-btn" bindtap="getMerchantList">重新加载</view>
+  </view>
+
+  <view class="loading-more" wx:if="{{loadingMore}}">
+    <text>加载中...</text>
+  </view>
+
+  <view class="no-more" wx:if="{{!hasMore && merchantList.length > 0}}">
+    <text>没有更多了</text>
+  </view>
+</view>

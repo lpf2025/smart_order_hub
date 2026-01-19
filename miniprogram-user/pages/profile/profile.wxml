@@ -1,0 +1,110 @@
+<view class="container">
+  <view class="user-info-bar">
+    <view class="user-info" bindtap="goToProfileEdit">
+      <image class="avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill" wx:if="{{userInfo.avatarUrl}}"></image>
+      <view class="avatar-placeholder" wx:else>{{userInfo.nickName ? userInfo.nickName.charAt(0) : '未'}}</view>
+      <view class="user-details">
+        <text class="nickname">{{userInfo.nickName || '未登录'}}</text>
+        <text class="phone">{{userInfo.phone || '点击登录'}}</text>
+      </view>
+    </view>
+    <view class="settings-btn" bindtap="goToSettings">
+      <text class="settings-icon">⚙️</text>
+    </view>
+  </view>
+
+  <view class="order-categories">
+    <view 
+      class="category-item" 
+      bindtap="goToOrderList" 
+      data-type="all"
+    >
+      <view class="category-icon-wrapper">
+        <text class="category-icon">📋</text>
+        <view class="badge" wx:if="{{orderCounts.all > 0}}">
+          {{orderCounts.all > 99 ? '99+' : orderCounts.all}}
+        </view>
+      </view>
+      <text class="category-name">全部订单</text>
+    </view>
+    <view 
+      class="category-item" 
+      bindtap="goToOrderList" 
+      data-type="receiving"
+    >
+      <view class="category-icon-wrapper">
+        <text class="category-icon">📦</text>
+        <view class="badge" wx:if="{{orderCounts.receiving > 0}}">
+          {{orderCounts.receiving > 99 ? '99+' : orderCounts.receiving}}
+        </view>
+      </view>
+      <text class="category-name">待收货</text>
+    </view>
+    <view 
+      class="category-item" 
+      bindtap="goToOrderList" 
+      data-type="comment"
+    >
+      <view class="category-icon-wrapper">
+        <text class="category-icon">⭐</text>
+        <view class="badge" wx:if="{{orderCounts.comment > 0}}">
+          {{orderCounts.comment > 99 ? '99+' : orderCounts.comment}}
+        </view>
+      </view>
+      <text class="category-name">待评价</text>
+    </view>
+    <view 
+      class="category-item" 
+      bindtap="goToOrderList" 
+      data-type="refund"
+    >
+      <view class="category-icon-wrapper">
+        <text class="category-icon">↩️</text>
+        <view class="badge" wx:if="{{orderCounts.refund > 0}}">
+          {{orderCounts.refund > 99 ? '99+' : orderCounts.refund}}
+        </view>
+      </view>
+      <text class="category-name">退款售后</text>
+    </view>
+  </view>
+
+  <view class="function-entries">
+    <view class="entry-item" bindtap="goToProfileEdit">
+      <view class="entry-left">
+        <text class="entry-icon">👤</text>
+        <text class="entry-name">个人信息</text>
+      </view>
+      <text class="entry-arrow">›</text>
+    </view>
+    <view class="entry-item" bindtap="goToAddressList">
+      <view class="entry-left">
+        <text class="entry-icon">📍</text>
+        <text class="entry-name">收货地址</text>
+      </view>
+      <text class="entry-arrow">›</text>
+    </view>
+    <view class="entry-item" bindtap="goToPaymentSettings">
+      <view class="entry-left">
+        <text class="entry-icon">💳</text>
+        <text class="entry-name">支付设置</text>
+      </view>
+      <text class="entry-arrow">›</text>
+    </view>
+    <view class="entry-item" bindtap="goToMessageSettings">
+      <view class="entry-left">
+        <text class="entry-icon">🔔</text>
+        <text class="entry-name">消息通知设置</text>
+      </view>
+      <text class="entry-arrow">›</text>
+    </view>
+  </view>
+
+  <view class="footer-links">
+    <view class="footer-link" bindtap="goToCustomerService">
+      <text class="footer-text">客服中心</text>
+    </view>
+    <view class="footer-link" bindtap="goToAbout">
+      <text class="footer-text">关于我们</text>
+    </view>
+  </view>
+</view>
