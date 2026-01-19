@@ -15,8 +15,12 @@ if [ ! -f "$JAR_NAME" ]; then
 fi
 
 # 检查端口是否被占用
-PID=$(lsof -ti:$PORT)
-if [ -n "$PID" ]; then
+PID=$(netstat -tlnp 2>/dev/null | grep ":$PORT " | awk '{print $7}' | cut -d'/' -f1)
+if [ -z "$PID" ]; then
+    PID=$(ss -tlnp 2>/dev/null | grep ":$PORT " | awk '{print $7}' | cut -d'/' -f1)
+fi
+
+if [ -n "$PID" ] && [ "$PID" != "-" ]; then
     echo "警告: 端口 $PORT 已被进程 $PID 占用"
     echo "正在停止旧进程..."
     kill -9 $PID
@@ -31,8 +35,12 @@ nohup java -jar $JAR_NAME --spring.profiles.active=prod > app.log 2>&1 &
 sleep 10
 
 # 检查应用是否启动成功
-NEW_PID=$(lsof -ti:$PORT)
-if [ -n "$NEW_PID" ]; then
+NEW_PID=$(netstat -tlnp 2>/dev/null | grep ":$PORT " | awk '{print $7}' | cut -d'/' -f1)
+if [ -z "$NEW_PID" ]; then
+    NEW_PID=$(ss -tlnp 2>/dev/null | grep ":$PORT " | awk '{print $7}' | cut -d'/' -f1)
+fi
+
+if [ -n "$NEW_PID" ] && [ "$NEW_PID" != "-" ]; then
     echo "========================================"
     echo "应用启动成功！"
     echo "进程ID: $NEW_PID"

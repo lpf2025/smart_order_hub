@@ -8,9 +8,12 @@ echo "停止 $APP_NAME"
 echo "========================================"
 
 # 查找进程
-PID=$(lsof -ti:$PORT)
-
+PID=$(netstat -tlnp 2>/dev/null | grep ":$PORT " | awk '{print $7}' | cut -d'/' -f1)
 if [ -z "$PID" ]; then
+    PID=$(ss -tlnp 2>/dev/null | grep ":$PORT " | awk '{print $7}' | cut -d'/' -f1)
+fi
+
+if [ -z "$PID" ] || [ "$PID" == "-" ]; then
     echo "应用未运行"
     exit 0
 fi
@@ -22,7 +25,11 @@ kill $PID
 
 # 等待进程结束
 for i in {1..10}; do
-    if ! lsof -ti:$PORT > /dev/null 2>&1; then
+    CHECK_PID=$(netstat -tlnp 2>/dev/null | grep ":$PORT " | awk '{print $7}' | cut -d'/' -f1)
+    if [ -z "$CHECK_PID" ]; then
+        CHECK_PID=$(ss -tlnp 2>/dev/null | grep ":$PORT " | awk '{print $7}' | cut -d'/' -f1)
+    fi
+    if [ -z "$CHECK_PID" ] || [ "$CHECK_PID" == "-" ]; then
         echo "应用已停止"
         exit 0
     fi
@@ -36,7 +43,12 @@ kill -9 $PID
 
 sleep 2
 
-if ! lsof -ti:$PORT > /dev/null 2>&1; then
+CHECK_PID=$(netstat -tlnp 2>/dev/null | grep ":$PORT " | awk '{print $7}' | cut -d'/' -f1)
+if [ -z "$CHECK_PID" ]; then
+    CHECK_PID=$(ss -tlnp 2>/dev/null | grep ":$PORT " | awk '{print $7}' | cut -d'/' -f1)
+fi
+
+if [ -z "$CHECK_PID" ] || [ "$CHECK_PID" == "-" ]; then
     echo "========================================"
     echo "应用已停止"
     echo "========================================"
